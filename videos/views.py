@@ -1,0 +1,14 @@
+from django.shortcuts import render, redirect
+from .forms import VideoUploadForm
+from .models import Video
+
+def upload_video(request):
+    if request.method == 'POST':
+        form = VideoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            video = form.save()
+            # extract_subtitles_task.delay(video.id)
+            return redirect('upload_video')
+    else:
+        form = VideoUploadForm()
+    return render(request, 'videos/upload.html', {'form': form})
