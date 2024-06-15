@@ -8,8 +8,7 @@ class Video(models.Model):
     s3_url = models.URLField(blank=True, null=True)
 
 class Subtitle(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    video_id = models.ForeignKey(Video, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
     start_time = models.FloatField()
     end_time = models.FloatField()
     text = models.TextField()
