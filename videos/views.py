@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import VideoUploadForm
-from .models import Video
+from .models import Video, Subtitle
 from .tasks import extract_subtitles
 
 def upload_video(request):
@@ -14,3 +14,20 @@ def upload_video(request):
     else:
         form = VideoUploadForm()
     return render(request, 'videos/upload.html', {'form': form})
+
+def search_subtitles(request):
+    keyword = request.GET.get('keyword')
+    if keyword:
+        results = [
+                {
+                    'video_title': subtitle.video.title,
+                    'start_time': subtitle.start_time,
+                    'end_time': subtitle.end_time,
+                    'text': subtitle.text,
+                }
+                for subtitle in Subtitle.objects.filter(text__icontains=keyword)
+            ]
+        print(results)
+    else:
+        results = []
+    return render(request, 'videos/search.html', {'results': results})
