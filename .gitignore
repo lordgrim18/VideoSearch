@@ -11,5 +11,6 @@ env/
 venv/
 
 migrations/
+media/videos/
 
 test.py
