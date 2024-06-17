@@ -1,11 +1,12 @@
 import uuid
+import boto3
 from django.shortcuts import render, redirect
 from django.conf import settings
 from .forms import VideoUploadForm
 from .models import Video, Subtitle
 from .tasks import extract_subtitles
 from .utils import save_file_locally
-from .dynamo_setup import video_table
+from .dynamo_setup import video_table, subtitle_table
 
 
 def upload_video(request):
@@ -55,9 +56,13 @@ def search_subtitles(request):
 
 def home(request):
     video_subtitles = []
-    videos = Video.objects.all()
+    videos = video_table.scan()['Items']
     for video in videos:
-        subtitles = Subtitle.objects.filter(video=video)
+        subtitles = subtitle_table.query(
+            KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video['id'])
+        )['Items']
         video_subtitles.append((video, subtitles))
+    print(video_subtitles)
+    
 
     return render(request, 'videos/home.html', {'video_subtitles': video_subtitles})
