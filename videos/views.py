@@ -8,7 +8,7 @@ def upload_video(request):
         form = VideoUploadForm(request.POST, request.FILES)
         if form.is_valid():
             video = form.save()
-            extract_subtitles.delay_on_commit(video.id)
+            extract_subtitles.delay_on_commit(video.id)   
             # extract_subtitles(video.id)
             return redirect('upload_video')
     else:
