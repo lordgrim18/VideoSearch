@@ -12,7 +12,7 @@ def extract_subtitles(video_id):
     video_path = video.video_file.path
     output_path = f"{video_path}.srt"
 
-    subprocess.run(['ccextractor', video_path, '-o', output_path])
+    subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', video_path, '-o', output_path])
 
     with open(output_path, 'r') as f:
         content = f.read()
