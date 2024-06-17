@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Subtitles{% endblock %}
+
+{% block content %}
+
+<h1>Home</h1>
+    {% for video, subtitles in video_subtitles %}
+        <h2>{{ video.title }}</h2>  <ul>
+            {% for subtitle in subtitles %}
+                <li>
+                    Start Time: {{ subtitle.start_time }}<br>  End Time: {{ subtitle.end_time }}<br>    Text: {{ subtitle.text }}               </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+{% endblock %}

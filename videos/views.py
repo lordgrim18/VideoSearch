@@ -31,3 +31,12 @@ def search_subtitles(request):
     else:
         results = []
     return render(request, 'videos/search.html', {'results': results})
+
+def home(request):
+    video_subtitles = []
+    videos = Video.objects.all()
+    for video in videos:
+        subtitles = Subtitle.objects.filter(video=video)
+        video_subtitles.append((video, subtitles))
+
+    return render(request, 'videos/home.html', {'video_subtitles': video_subtitles})

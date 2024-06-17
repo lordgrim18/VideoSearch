@@ -10,3 +10,5 @@ celery inspect active_queues
 celery inspect active
 
 celery status  
+
+python manage.py runserver   
