@@ -4,9 +4,7 @@ import boto3
 from decouple import config
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 
-from core.models import Video, Subtitle
 from core.dynamo_setup import video_table, subtitle_table
 from core.utils import save_file_locally
 from core.tasks import extract_subtitles
@@ -17,10 +15,6 @@ class VideoSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
     title = serializers.CharField()
     video_file_name = serializers.CharField(required=False)
-
-    class Meta:
-        model = Video
-        fields = '__all__'
 
     def validate_title(self, value):
         if video_table.scan(FilterExpression=boto3.dynamodb.conditions.Attr('title').eq(value))['Items']:
@@ -100,3 +94,29 @@ class StorageSerializer(serializers.Serializer):
         s3 = boto3.client('s3')
         bucket_name = config('BUCKET_NAME')
         s3.delete_object(Bucket=bucket_name, Key=object_name)
+
+class StorageURLSerializer(StorageSerializer):
+    expires_in = serializers.IntegerField(required=False)
+    presigned_url = serializers.SerializerMethodField()
+
+    def validate(self, data):
+        super().validate(data)
+        expires_in = data.get('expires_in', 3600)
+        data['expires_in'] = expires_in
+        return data
+    
+    def get_presigned_url(self, validated_data):
+        print(validated_data)
+        object_name = validated_data['object_name']
+        expires_in = validated_data['expires_in']
+        print(object_name, expires_in)
+        s3 = boto3.client('s3')
+        bucket_name = config('BUCKET_NAME')
+        print(bucket_name)
+        url = s3.generate_presigned_url(
+            'get_object', 
+            Params={'Bucket': bucket_name, 'Key': object_name},
+            ExpiresIn=expires_in
+        )
+        print(url)
+        return url

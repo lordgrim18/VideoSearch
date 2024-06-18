@@ -17,7 +17,7 @@ class CustomResponse():
             "status_code": self.status_code
             }, status=self.status_code)
     
-    def failure_reponse(self):
+    def failure_response(self):
         self.error = True
         self.status_code = status.HTTP_400_BAD_REQUEST
         return Response({
