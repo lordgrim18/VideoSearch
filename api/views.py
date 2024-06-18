@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 
 from api.utils import CustomResponse
 from core.dynamo_setup import video_table, subtitle_table
-from core.utils import save_file_locally
+from core.tasks import delete_video_subtitles
 
 from .serializer import VideoSerializer, VideoSubtitleSerializer
 
@@ -48,7 +48,7 @@ class VideoAPIView(APIView):
         video = video_table.get_item(Key={'id': video_id})
         if video.get('Item') is None:
             return CustomResponse(message="Video not found", data={}).failure_reponse()
-        video_table.delete_item(Key={'id': video_id})
+        delete_video_subtitles.delay(video_id)
         return CustomResponse(message="Video deleted successfully", data={}).success_response()
     
 class SubtitleAPIView(APIView):
