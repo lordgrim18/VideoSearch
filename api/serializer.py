@@ -47,3 +47,14 @@ class VideoSerializer(serializers.Serializer):
 
         video = video_table.get_item(Key={'id': video_id})['Item']
         return video
+    
+    def update(self, instance, validated_data):
+        video_id = instance['id']
+        video_table.update_item(
+            Key={'id': video_id},
+            UpdateExpression='SET title = :title',
+            ExpressionAttributeValues={':title': validated_data['title']}
+        )
+        video = video_table.get_item(Key={'id': video_id})['Item']
+
+        return video

@@ -33,3 +33,14 @@ class VideoAPIView(APIView):
             serializer.save()
             return CustomResponse(message="Video created successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error creating video", data=serializer.errors).failure_reponse()
+    
+    def patch(self, request, video_id):
+        video = video_table.get_item(Key={'id': video_id})
+        if video.get('Item') is None:
+            return CustomResponse(message="Video not found", data={}).failure_reponse()
+        serializer = VideoSerializer(video['Item'], data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse(message="Video updated successfully", data=serializer.data).success_response()
+        return CustomResponse(message="Error updating video", data=serializer.errors).failure_reponse()
+    
