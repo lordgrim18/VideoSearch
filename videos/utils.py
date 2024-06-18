@@ -1,7 +1,9 @@
 import re
 import os
+import boto3
 from django.conf import settings
 from decimal import Decimal
+from decouple import config
 
 def time_to_seconds(time_str):
     h, m, s = map(float, time_str.split(',')[0].split(':'))
@@ -34,3 +36,8 @@ def save_file_locally(file, video_id):
             destination.write(chunk)
 
     return file_path
+
+def upload_to_s3(file, file_name):
+    s3 = boto3.client('s3')
+    bucket_name = config('BUCKET_NAME')
+    s3.upload_fileobj(file, bucket_name, file_name)
