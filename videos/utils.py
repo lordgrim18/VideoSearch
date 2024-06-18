@@ -13,7 +13,9 @@ def parse_srt(srt_content):
 
     subtitles = []
     for match in matches:
-        text = re.sub(r'\s+', ' ', match[3].strip())
+        text = re.sub(r'\s+', ' ', match[3].strip())  # Clean up spaces and newlines
+        text = re.sub(r'[^a-zA-Z0-9\s.,?!&\'"@#\-]', '', text)  # Remove unwanted characters, keep alphabets, numbers, spaces, and specific symbols
+        print('text:', text)
         subtitles.append({
             'start': Decimal(time_to_seconds(match[1])),
             'text': text
