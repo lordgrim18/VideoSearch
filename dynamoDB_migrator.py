@@ -18,8 +18,8 @@ def create_video_table():
             },
         ],
         ProvisionedThroughput={
-            'ReadCapacityUnits': 15,
-            'WriteCapacityUnits': 15
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
         }
     )
     table.wait_until_exists()
@@ -52,8 +52,8 @@ def create_subtitle_table():
             },
         ],
         ProvisionedThroughput={
-            'ReadCapacityUnits': 15,
-            'WriteCapacityUnits': 15
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
         }
     )
     table.wait_until_exists()

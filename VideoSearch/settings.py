@@ -126,11 +126,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Celery Configuration Options
-# CELERY_IMPORTS = ("tasks", )
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
-# accept_content = config("accept_content")
-# task_serializer = config("task_serializer")
-# result_serializer = config("result_serializer")
-# CELERY_TIMEZONE = config("CELERY_TIMEZONE")
-# CELERY_CACHE_BACKEND = 'django-cache'
+result_backend = config("CELERY_RESULT_BACKEND")

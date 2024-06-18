@@ -8,6 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VideoSearch.settings')
 app = Celery('VideoSearch')
 app.conf.enable_utc = False
 app.conf.update(timezone='Asia/Kolkata')
+app.conf.broker_connection_retry_on_startup = True
 app.config_from_object(settings, namespace='CELERY')
 
 app.autodiscover_tasks()
