@@ -6,7 +6,7 @@ from decouple import config
 from celery import shared_task
 
 from .utils import parse_srt
-from .dynamo_setup import subtitle_table
+from .dynamo_setup import subtitle_table, video_table
 
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):
@@ -37,3 +37,17 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
 
     os.remove(local_file_url)
     os.remove(output_path)
+
+@shared_task
+def delete_video_subtitles(video_id):
+    # Also delete associated subtitles
+    video_table.delete_item(Key={'id': video_id})
+    subtitles = subtitle_table.query(KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video_id))
+    with subtitle_table.batch_writer() as batch:
+        for subtitle in subtitles['Items']:
+            batch.delete_item(
+                Key={
+                    'video_id': subtitle['video_id'],
+                    'start_time': subtitle['start_time']
+                }
+            )
