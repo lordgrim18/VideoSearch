@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import VideoListAPIView, VideoAPIView, SubtitleAPIView, StorageListAPIView, StorageAPIView, StorageURLAPIView
+from .views import VideoListAPIView, VideoAPIView, SubtitleListAPIView, SubtitleAPIView, StorageListAPIView, StorageAPIView, StorageURLAPIView
 
 urlpatterns = [
     path("videos/", VideoListAPIView.as_view(), name="list_videos"), # get - list all videos
@@ -9,7 +9,8 @@ urlpatterns = [
     path("videos/update/<str:video_id>/", VideoAPIView.as_view(), name="update_video"), # patch - update a video
     path("videos/delete/<str:video_id>/", VideoAPIView.as_view(), name="delete_video"), # delete - delete a video
 
-    path("subtitles/<str:video_id>/", SubtitleAPIView.as_view(), name="subtitles"), # get - list all subtitles for a video
+    path("subtitles/search/", SubtitleAPIView.as_view(), name="search_subtitles"), # get - search subtitles
+    path("subtitles/<str:video_id>/", SubtitleListAPIView.as_view(), name="subtitles"), # get - list all subtitles for a video
 
     path("storage/url/", StorageURLAPIView.as_view(), name="storage_url"), # get - generate a presigned url for a file in bucket
 
