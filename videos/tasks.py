@@ -25,7 +25,6 @@ def extract_subtitles(video_id):
 
     # Process the .srt file and save to Subtitle model
     subtitles = parse_srt(content)
-    base_id = str(uuid.uuid1())
     with subtitle_table.batch_writer(overwrite_by_pkeys=['video_id', 'start_time']) as batch:
         for index, subtitle in enumerate(subtitles):
             batch.put_item(

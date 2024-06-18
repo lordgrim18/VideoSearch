@@ -13,9 +13,10 @@ def parse_srt(srt_content):
 
     subtitles = []
     for match in matches:
+        text = re.sub(r'\s+', ' ', match[3].strip())
         subtitles.append({
             'start': Decimal(time_to_seconds(match[1])),
-            'text': match[3]
+            'text': text
         })
 
     return subtitles
