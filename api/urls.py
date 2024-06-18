@@ -8,5 +8,6 @@ urlpatterns = [
     path("videos/create/", VideoAPIView.as_view(), name="create_video"), # post - create a video
     path("videos/<str:video_id>/", VideoAPIView.as_view(), name="video"), # get - a single video
     path("videos/update/<str:video_id>/", VideoAPIView.as_view(), name="update_video"), # patch - update a video
+    path("videos/delete/<str:video_id>/", VideoAPIView.as_view(), name="delete_video"), # delete - delete a video
     
 ]

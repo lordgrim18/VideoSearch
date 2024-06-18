@@ -44,3 +44,9 @@ class VideoAPIView(APIView):
             return CustomResponse(message="Video updated successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error updating video", data=serializer.errors).failure_reponse()
     
+    def delete(self, request, video_id):
+        video = video_table.get_item(Key={'id': video_id})
+        if video.get('Item') is None:
+            return CustomResponse(message="Video not found", data={}).failure_reponse()
+        video_table.delete_item(Key={'id': video_id})
+        return CustomResponse(message="Video deleted successfully", data={}).success_response()
