@@ -1,7 +1,9 @@
 import re
 import os
+import boto3
 from django.conf import settings
 from decimal import Decimal
+from decouple import config
 
 def time_to_seconds(time_str):
     h, m, s = map(float, time_str.split(',')[0].split(':'))
@@ -15,7 +17,6 @@ def parse_srt(srt_content):
     for match in matches:
         text = re.sub(r'\s+', ' ', match[3].strip())  # Clean up spaces and newlines
         text = re.sub(r'[^a-zA-Z0-9\s.,?!&\'"@#\-]', '', text)  # Remove unwanted characters, keep alphabets, numbers, spaces, and specific symbols
-        print('text:', text)
         subtitles.append({
             'start': Decimal(time_to_seconds(match[1])),
             'text': text
@@ -23,12 +24,12 @@ def parse_srt(srt_content):
 
     return subtitles
 
-def save_file_locally(file, video_id):
+def save_file_locally(file, video_file_name):
     local_dir = os.path.join(settings.MEDIA_ROOT, 'videos')
     if not os.path.exists(local_dir):
         os.makedirs(local_dir)
     
-    file_path = os.path.join(local_dir, f"{video_id}_{file.name}")
+    file_path = os.path.join(local_dir, video_file_name)
     with open(file_path, 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
