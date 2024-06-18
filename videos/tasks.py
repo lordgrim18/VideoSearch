@@ -1,7 +1,7 @@
 import subprocess
 from celery import shared_task
 from decimal import Decimal
-
+import uuid
 from .models import Video, Subtitle
 from .utils import parse_srt
 
@@ -12,7 +12,6 @@ def extract_subtitles(video_id):
     print('Task started, video_id:', video_id)
     # video = Video.objects.get(id=video_id)
     video = video_table.get_item(Key={'id': video_id})
-    print('video:', video)
     video = video['Item']
 
     video_path = video['video_file_url']
@@ -25,11 +24,13 @@ def extract_subtitles(video_id):
 
     # Process the .srt file and save to Subtitle model
     subtitles = parse_srt(content)
-    for subtitle in subtitles:
-        subtitle_table.put_item(
-            Item={
-                'video_id': video_id,
-                'start_time': Decimal(subtitle['start']),
-                'text': subtitle['text']
-            }
-        )
+    with subtitle_table.batch_writer(overwrite_by_pkeys=['video_id', 'start_time']) as batch:
+        for subtitle in subtitles:
+            batch.put_item(
+                Item={
+                    'video_id': video_id,
+                    'start_time': Decimal(subtitle['start']),
+                    'text': subtitle['text'],
+                    'text_lower': subtitle['text'].lower()
+                }
+            )   
