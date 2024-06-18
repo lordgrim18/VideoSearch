@@ -49,11 +49,11 @@ def upload_video(request):
     return render(request, 'videos/upload.html', {'form': form})
 
 def search_subtitles(request):
-    keyword = request.GET.get('keyword')
+    keyword = request.GET.get('keyword').lower()
     results = []
     if keyword:
         subtitle_results = subtitle_table.scan(
-            FilterExpression=boto3.dynamodb.conditions.Attr('text').contains(keyword)
+            FilterExpression=boto3.dynamodb.conditions.Attr('text_lower').contains(keyword)
         )['Items']
 
         for subtitle in subtitle_results:
