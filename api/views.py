@@ -1,11 +1,11 @@
-import uuid
+import boto3
 from rest_framework.views import APIView
 
 from api.utils import CustomResponse
 from core.dynamo_setup import video_table, subtitle_table
 from core.utils import save_file_locally
 
-from .serializer import VideoSerializer
+from .serializer import VideoSerializer, VideoSubtitleSerializer
 
 
 class VideoListAPIView(APIView):
@@ -50,3 +50,26 @@ class VideoAPIView(APIView):
             return CustomResponse(message="Video not found", data={}).failure_reponse()
         video_table.delete_item(Key={'id': video_id})
         return CustomResponse(message="Video deleted successfully", data={}).success_response()
+    
+class SubtitleAPIView(APIView):
+    def get(self, request, video_id):
+        subtitles = subtitle_table.query(KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video_id))
+        if subtitles.get('Items') is None:
+            return CustomResponse(message="No subtitles found", data={}).failure_reponse()
+        
+        video_title = video_table.get_item(Key={'id': video_id})['Item']['title']
+        
+        subtitles = [{
+            'start_time': str(subtitle['start_time']),
+            'text': subtitle['text']
+        } for subtitle in subtitles['Items']]
+        data = {
+            'video_id': video_id,
+            'video_title': video_title,
+            'subtitles': subtitles
+        }
+
+        serializer = VideoSubtitleSerializer(data=data)
+        if serializer.is_valid():
+            return CustomResponse(message="Subtitles fetched successfully", data=serializer.data).success_response()
+        return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_reponse()
