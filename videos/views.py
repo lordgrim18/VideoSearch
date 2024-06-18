@@ -9,6 +9,16 @@ from .utils import save_file_locally
 from .dynamo_setup import video_table, subtitle_table
 
 
+def home(request):
+    video_subtitles = []
+    videos = video_table.scan()['Items']
+    for video in videos:
+        subtitles = subtitle_table.query(
+            KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video['id'])
+        )['Items']
+        video_subtitles.append((video, subtitles))
+    return render(request, 'videos/home.html', {'video_subtitles': video_subtitles})
+
 def upload_video(request):
     if request.method == 'POST':
         form = VideoUploadForm(request.POST, request.FILES)
@@ -40,29 +50,18 @@ def upload_video(request):
 
 def search_subtitles(request):
     keyword = request.GET.get('keyword')
+    results = []
     if keyword:
-        results = [
-                {
-                    'video_title': subtitle.video.title,
-                    'start_time': subtitle.start_time,
-                    'text': subtitle.text,
-                }
-                for subtitle in Subtitle.objects.filter(text__icontains=keyword)
-            ]
-        print(results)
-    else:
-        results = []
-    return render(request, 'videos/search.html', {'results': results})
-
-def home(request):
-    video_subtitles = []
-    videos = video_table.scan()['Items']
-    for video in videos:
-        subtitles = subtitle_table.query(
-            KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video['id'])
+        subtitle_results = subtitle_table.scan(
+            FilterExpression=boto3.dynamodb.conditions.Attr('text').contains(keyword)
         )['Items']
-        video_subtitles.append((video, subtitles))
-    print(video_subtitles)
-    
 
-    return render(request, 'videos/home.html', {'video_subtitles': video_subtitles})
+        for subtitle in subtitle_results:
+            video = video_table.get_item(Key={'id': subtitle['video_id']})['Item']
+            results.append({
+                'video_title': video['title'],
+                'video_id': subtitle['video_id'],
+                'start_time': subtitle['start_time'],
+                'text': subtitle['text']
+            })
+    return render(request, 'videos/search.html', {'results': results})
