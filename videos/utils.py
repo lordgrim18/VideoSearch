@@ -36,7 +36,8 @@ def save_file_locally(file, video_file_name):
 
     return file_path
 
-def upload_to_s3(file, file_name):
+def upload_to_s3(file_path, file_name):
     s3 = boto3.client('s3')
     bucket_name = config('BUCKET_NAME')
-    s3.upload_fileobj(file, bucket_name, file_name)
+    print(f"Uploading {file_name} to S3")
+    s3.upload_file(file_path, bucket_name, file_name)
