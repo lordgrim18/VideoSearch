@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # custom apps
-    "videos",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -31,7 +31,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # custom middleware
-    'videos.middleware.LatencyMiddleware',
+    'core.middleware.LatencyMiddleware',
 ]
 
 ROOT_URLCONF = "VideoSearch.urls"

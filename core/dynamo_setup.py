@@ -1,8 +1,6 @@
-import uuid
 import boto3
-from django.conf import settings
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
 
 video_table = dynamodb.Table('Videos')
 subtitle_table = dynamodb.Table('Subtitles')
