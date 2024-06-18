@@ -35,9 +35,3 @@ def save_file_locally(file, video_file_name):
             destination.write(chunk)
 
     return file_path
-
-def upload_to_s3(file_path, file_name):
-    s3 = boto3.client('s3')
-    bucket_name = config('BUCKET_NAME')
-    print(f"Uploading {file_name} to S3")
-    s3.upload_file(file_path, bucket_name, file_name)
