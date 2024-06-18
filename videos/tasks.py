@@ -1,14 +1,12 @@
-import subprocess
 import os
-from celery import shared_task
-from decimal import Decimal
-import uuid
 import boto3
+import subprocess
+from decimal import Decimal
 from decouple import config
-from .models import Video, Subtitle
-from .utils import parse_srt
+from celery import shared_task
 
-from .dynamo_setup import video_table, subtitle_table
+from .utils import parse_srt
+from .dynamo_setup import subtitle_table
 
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):

@@ -13,4 +13,6 @@ venv/
 migrations/
 media/videos/
 
+dump.rdb
+
 test.py
