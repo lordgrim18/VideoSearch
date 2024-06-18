@@ -1,9 +1,6 @@
 import re
 import os
-import boto3
 from django.conf import settings
-from decimal import Decimal
-from decouple import config
 
 def time_to_seconds(time_str):
     h, m, s = map(float, time_str.split(',')[0].split(':'))
@@ -18,7 +15,7 @@ def parse_srt(srt_content):
         text = re.sub(r'\s+', ' ', match[3].strip())  # Clean up spaces and newlines
         text = re.sub(r'[^a-zA-Z0-9\s.,?!&\'"@#\-]', '', text)  # Remove unwanted characters, keep alphabets, numbers, spaces, and specific symbols
         subtitles.append({
-            'start': Decimal(time_to_seconds(match[1])),
+            'start': time_to_seconds(match[1]),
             'text': text
         })
 

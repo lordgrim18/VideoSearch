@@ -1,8 +1,8 @@
 import uuid
 import boto3
 from django.shortcuts import render, redirect
+
 from .forms import VideoUploadForm
-from .models import Video, Subtitle
 from .tasks import extract_subtitles
 from .utils import save_file_locally
 from .dynamo_setup import video_table, subtitle_table
