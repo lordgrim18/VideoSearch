@@ -28,9 +28,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django_celery_results',
+    'rest_framework',
+    'corsheaders',
 
     # custom apps
-    "videos.apps.VideosConfig",
+    "videos",
 ]
 
 MIDDLEWARE = [
@@ -46,6 +48,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "VideoSearch.urls"
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {
