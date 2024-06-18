@@ -1,5 +1,8 @@
+import os
 import uuid
 import boto3
+from decouple import config
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -41,7 +44,7 @@ class VideoSerializer(serializers.Serializer):
             )
         except Exception as e:
             print('Error:', e)
-            return CustomResponse(message="Error saving video to database", data=e).failure_reponse()
+            raise serializers.ValidationError('Error creating video')
         finally:
             extract_subtitles.delay(video_id, local_file_url, video_file_name)
 
@@ -66,3 +69,18 @@ class VideoSubtitleSerializer(serializers.Serializer):
     video_id = serializers.CharField()
     video_title = serializers.CharField()
     subtitles = SubtitleSerializer(many=True)
+
+class StorageSerializer(serializers.Serializer):
+    object_name = serializers.CharField(required=True)
+
+    def validate(self, data):
+        object_name = data.get('object_name')
+        s3 = boto3.client('s3')
+        bucket_name = config('BUCKET_NAME')
+        bucket_objs = s3.list_objects_v2(Bucket=bucket_name)
+
+        if bucket_objs.get('Contents') is None:
+            raise serializers.ValidationError('No Objects found inside storage')
+        if object_name not in [file['Key'] for file in bucket_objs['Contents']]:
+            raise serializers.ValidationError('Object not found in storage')
+        return data

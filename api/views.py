@@ -1,11 +1,14 @@
+import os
 import boto3
+from decouple import config
 from rest_framework.views import APIView
+from django.conf import settings
 
 from api.utils import CustomResponse
 from core.dynamo_setup import video_table, subtitle_table
 from core.tasks import delete_video_subtitles
 
-from .serializer import VideoSerializer, VideoSubtitleSerializer
+from .serializer import VideoSerializer, VideoSubtitleSerializer, StorageSerializer
 
 
 class VideoListAPIView(APIView):
@@ -73,3 +76,18 @@ class SubtitleAPIView(APIView):
         if serializer.is_valid():
             return CustomResponse(message="Subtitles fetched successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_reponse()
+    
+class StorageListAPIView(APIView):
+
+    def get(self, request):
+        s3 = boto3.client('s3')
+        bucket_name = config('BUCKET_NAME')
+        bucket_objs = s3.list_objects_v2(Bucket=bucket_name)
+        if bucket_objs.get('Contents') is None:
+            return CustomResponse(message="No Objects found inside storage", data={}).failure_reponse()
+        
+        files = [{'object_name': file['Key']} for file in bucket_objs['Contents']]
+        serializer = StorageSerializer(data=files, many=True)
+        if serializer.is_valid():
+            return CustomResponse(message="Storage objects fetched successfully", data=serializer.data).success_response()
+        return CustomResponse(message="Error fetching storage objects", data=serializer.errors).failure_reponse()
