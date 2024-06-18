@@ -1,4 +1,5 @@
 import subprocess
+import os
 from celery import shared_task
 from decimal import Decimal
 import uuid
@@ -8,16 +9,10 @@ from .utils import parse_srt
 from .dynamo_setup import video_table, subtitle_table
 
 @shared_task
-def extract_subtitles(video_id):
-    print('Task started, video_id:', video_id)
-    # video = Video.objects.get(id=video_id)
-    video = video_table.get_item(Key={'id': video_id})
-    video = video['Item']
+def extract_subtitles(video_id, local_file_url, video_file_name):
+    output_path = f"{local_file_url}.srt"
 
-    video_path = video['video_file_url']
-    output_path = f"{video_path}.srt"
-
-    subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', video_path, '-o', output_path])
+    subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', local_file_url, '-o', output_path])
 
     with open(output_path, 'r') as f:
         content = f.read()
@@ -34,3 +29,6 @@ def extract_subtitles(video_id):
                     'text_lower': subtitle['text'].lower()
                 }
             )   
+
+    os.remove(local_file_url)
+    os.remove(output_path)
