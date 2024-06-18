@@ -91,3 +91,19 @@ class StorageListAPIView(APIView):
         if serializer.is_valid():
             return CustomResponse(message="Storage objects fetched successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error fetching storage objects", data=serializer.errors).failure_reponse()
+
+class StorageAPIView(APIView):
+
+    def get(self, request, object_name):
+        serializer = StorageSerializer(data={'object_name': object_name})
+        if serializer.is_valid():
+            download = serializer.retrieve(object_name)
+            return download
+        return CustomResponse(message="Error fetching object", data=serializer.errors).failure_response()
+
+    def delete(self, request, object_name):
+        serializer = StorageSerializer(data={'object_name': object_name})
+        if serializer.is_valid():
+            serializer.destroy(object_name)
+            return CustomResponse(message="Object deleted successfully", data={}).success_response()
+        return CustomResponse(message="Error deleting object", data=serializer.errors).failure_reponse()

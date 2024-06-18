@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import VideoListAPIView, VideoAPIView, SubtitleAPIView, StorageListAPIView
+from .views import VideoListAPIView, VideoAPIView, SubtitleAPIView, StorageListAPIView, StorageAPIView
 
 urlpatterns = [
     path("videos/", VideoListAPIView.as_view(), name="list_videos"), # get - list all videos
@@ -12,4 +12,6 @@ urlpatterns = [
     path("subtitles/<str:video_id>/", SubtitleAPIView.as_view(), name="subtitles"), # get - list all subtitles for a video
     
     path("storage/", StorageListAPIView.as_view(), name="storage"), # get - list all files in bucket 
+    path("storage/delete/<str:object_name>/", StorageAPIView.as_view(), name="delete_file"), # delete - delete a file from bucket 
+    path("storage/<str:object_name>/", StorageAPIView.as_view(), name="file"), # get - download a file from bucket
 ]

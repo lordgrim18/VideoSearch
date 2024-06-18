@@ -84,3 +84,19 @@ class StorageSerializer(serializers.Serializer):
         if object_name not in [file['Key'] for file in bucket_objs['Contents']]:
             raise serializers.ValidationError('Object not found in storage')
         return data
+
+    def retrieve(self, object_name):
+        s3 = boto3.client('s3')
+        bucket_name = config('BUCKET_NAME')
+
+        download_path = os.path.join(settings.MEDIA_ROOT, 'videos', object_name)
+        if os.path.exists(download_path):
+            return CustomResponse(message="File already exists", data={'download_path': download_path}).failure_reponse()
+        
+        s3.download_file(bucket_name, object_name, download_path)
+        return CustomResponse(message="File downloaded successfully", data={'download_path': download_path}).success_response()
+    
+    def destroy(self, object_name):
+        s3 = boto3.client('s3')
+        bucket_name = config('BUCKET_NAME')
+        s3.delete_object(Bucket=bucket_name, Key=object_name)
