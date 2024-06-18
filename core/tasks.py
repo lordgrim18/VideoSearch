@@ -30,10 +30,10 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
                 }
             )   
 
-    s3 = boto3.client('s3')
-    bucket_name = config('BUCKET_NAME')
-    print(f"Uploading {local_file_url} to S3")
-    s3.upload_file(local_file_url, bucket_name, video_file_name)
+    # s3 = boto3.client('s3')
+    # bucket_name = config('BUCKET_NAME')
+    # print(f"Uploading {local_file_url} to S3")
+    # s3.upload_file(local_file_url, bucket_name, video_file_name)
 
     os.remove(local_file_url)
     os.remove(output_path)

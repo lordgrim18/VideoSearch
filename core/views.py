@@ -16,7 +16,7 @@ def home(request):
             KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video['id'])
         )['Items']
         video_subtitles.append((video, subtitles))
-    return render(request, 'videos/home.html', {'video_subtitles': video_subtitles})
+    return render(request, 'core/home.html', {'video_subtitles': video_subtitles})
 
 def upload_video(request):
     if request.method == 'POST':
@@ -43,7 +43,7 @@ def upload_video(request):
             return redirect('upload_video')
     else:
         form = VideoUploadForm()
-    return render(request, 'videos/upload.html', {'form': form})
+    return render(request, 'core/upload.html', {'form': form})
 
 def search_subtitles(request):
     keyword = request.GET.get('keyword')
@@ -61,4 +61,4 @@ def search_subtitles(request):
                 'start_time': subtitle['start_time'],
                 'text': subtitle['text']
             })
-    return render(request, 'videos/search.html', {'results': results})
+    return render(request, 'core/search.html', {'results': results})
