@@ -1,6 +1,6 @@
 import boto3
 
-dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+dynamodb = boto3.resource('dynamodb')
 
 def create_video_table():
     table = dynamodb.create_table(
@@ -18,8 +18,8 @@ def create_video_table():
             },
         ],
         ProvisionedThroughput={
-            'ReadCapacityUnits': 10,
-            'WriteCapacityUnits': 10
+            'ReadCapacityUnits': 15,
+            'WriteCapacityUnits': 15
         }
     )
     table.wait_until_exists()
@@ -52,8 +52,8 @@ def create_subtitle_table():
             },
         ],
         ProvisionedThroughput={
-            'ReadCapacityUnits': 10,
-            'WriteCapacityUnits': 10
+            'ReadCapacityUnits': 15,
+            'WriteCapacityUnits': 15
         }
     )
     table.wait_until_exists()
