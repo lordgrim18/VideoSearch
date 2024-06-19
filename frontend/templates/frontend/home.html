@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Videos List</h5>
                     <p class="card-text">Browse through the list of uploaded videos.</p>
-                    <a href="" class="btn btn-primary">Go to Videos List</a>
+                    <a href="{% url 'videos_list_front' %}" class="btn btn-primary">Go to Videos List</a>
                 </div>
             </div>
             <div class="card">
@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Upload Video</h5>
                     <p class="card-text">Upload your videos to search for subtitles.</p>
-                    <a href="" class="btn btn-primary">Upload Video</a>
+                    <a href="{% url 'upload' %}" class="btn btn-primary">Upload Video</a>
                 </div>
             </div>
             <div class="card">
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Search Subtitles</h5>
                     <p class="card-text">Find subtitles for your favorite videos.</p>
-                    <a href="" class="btn btn-primary">Search Subtitles</a>
+                    <a href="{% url 'subtitle-front-search' %}" class="btn btn-primary">Search Subtitles</a>
                 </div>
             </div>
         </div>
