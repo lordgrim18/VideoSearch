@@ -30,7 +30,7 @@ class SubtitleListAPIView(APIView):
                 'count': count,
                 'results': serializer.data
             }
-            return CustomResponse(message="Subtitles fetched successfully", data=serializer.data).success_response()
+            return CustomResponse(message="Subtitles fetched successfully", data=data).success_response()
         return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_response()
     
 class SubtitleSearchAPIView(APIView):
