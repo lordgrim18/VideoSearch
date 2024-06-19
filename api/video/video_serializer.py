@@ -1,23 +1,16 @@
 import uuid
 import boto3
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 
-from core.models import Video, Subtitle
-from core.dynamo_setup import video_table, subtitle_table
+from core.dynamo_setup import video_table
 from core.utils import save_file_locally
 from core.tasks import extract_subtitles
 
-from api.utils import CustomResponse
 
 class VideoSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
     title = serializers.CharField()
     video_file_name = serializers.CharField(required=False)
-
-    class Meta:
-        model = Video
-        fields = '__all__'
 
     def validate_title(self, value):
         if video_table.scan(FilterExpression=boto3.dynamodb.conditions.Attr('title').eq(value))['Items']:
@@ -41,7 +34,7 @@ class VideoSerializer(serializers.Serializer):
             )
         except Exception as e:
             print('Error:', e)
-            return CustomResponse(message="Error saving video to database", data=e).failure_reponse()
+            raise serializers.ValidationError('Error creating video')
         finally:
             extract_subtitles.delay(video_id, local_file_url, video_file_name)
 
@@ -58,11 +51,3 @@ class VideoSerializer(serializers.Serializer):
         video = video_table.get_item(Key={'id': video_id})['Item']
         return video
     
-class SubtitleSerializer(serializers.Serializer):
-    start_time = serializers.DecimalField(max_digits=10, decimal_places=3)
-    text = serializers.CharField()
-
-class VideoSubtitleSerializer(serializers.Serializer):
-    video_id = serializers.CharField()
-    video_title = serializers.CharField()
-    subtitles = SubtitleSerializer(many=True)
