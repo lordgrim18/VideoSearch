@@ -29,6 +29,7 @@ class VideoSerializer(serializers.Serializer):
                 Item={
                     'id': video_id,
                     'title': title,
+                    'title_lower': title.lower(),
                     'video_file_name': video_file_name
                 }
             )

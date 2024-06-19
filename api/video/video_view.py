@@ -52,4 +52,18 @@ class VideoAPIView(APIView):
         delete_video_subtitles.delay(video_id)
         return CustomResponse(message="Video deleted successfully", data={}).success_response()
     
+class VideoSearchAPIView(APIView):
 
+    def get(self, request):
+        keyword = request.query_params.get('keyword')
+        if not keyword:
+            return CustomResponse(message="No keyword provided", data={}).failure_response()
+        
+        videos = video_table.scan(
+            FilterExpression=boto3.dynamodb.conditions.Attr('title_lower').contains(keyword.lower())
+        )['Items']
+        
+        serializer = VideoSerializer(data=videos, many=True)
+        if serializer.is_valid():
+            return CustomResponse(message="Videos fetched successfully", data=serializer.data).success_response()
+        return CustomResponse(message="Error fetching videos", data=serializer.errors).failure_response()
