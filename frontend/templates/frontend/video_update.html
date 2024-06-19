@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="single-video-section">
+    <div class="container">
+        {% if extra_param == 'delete_option' %}
+            <div class="alert alert-danger" role="alert">
+                <h5>Are you sure you want to delete this video?</h5>
+                <form method="post" action="{% url 'delete-video-front' data.data.id %}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="edit-video-form mb-4">
+                <h3>Edit Video Title</h3>
+                <form id="editVideoForm" method="post">
+                    <input type="hidden" name="_method" value="PATCH">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="editTitle">Title</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
