@@ -60,9 +60,7 @@ class SingleVideoAPIView(APIView):
 class VideoSearchAPIView(APIView):
 
     def get(self, request):
-        keyword = request.query_params.get('keyword')
-        if not keyword:
-            return CustomResponse(message="No keyword provided", data={}).failure_response()
+        keyword = request.query_params.get('keyword', '')
         videos = video_table.scan(
             FilterExpression=boto3.dynamodb.conditions.Attr('title_lower').contains(keyword.lower())
         )['Items']
