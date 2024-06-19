@@ -4,23 +4,40 @@
 <section class="videos-list-section">
     <div class="container">
         <h2 class="section-title text-center mb-4">Videos List</h2>
-        <div class="row">
-            {% for video in data %}
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Video Thumbnail">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ video.title }}</h5>
-                        <div class="btn-group" role="group">
-                            <a href="#" class="btn btn-primary">Subtitles</a>
-                            <a href="#" class="btn btn-secondary">Edit</a>
-                            <a href="#" class="btn btn-danger">Delete</a>
-                        </div>
-                    </div>
+
+        <!-- Search Form -->
+        <form method="get" action="{% url 'video-search-front' %}" class="mb-4">
+            <div class="input-group" style="max-width: 400px; margin: 0 auto;">
+                <input type="text" class="form-control" name="keyword" placeholder="Search videos by title" value="{{ keyword }}" style="flex: 1 1 auto;">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Search</button>
                 </div>
             </div>
-            {% endfor %}
-        </div>
+        </form>
+
+        <!-- Videos List -->
+        {% if data %}
+            <div class="video-count text-center mb-4">
+                <p class="h4">{{ data.count }} video{{ data.count|pluralize }}</p>
+            </div>
+            <div class="row">
+                {% for video in data.results %}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Video Thumbnail">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ video.title }}</h5>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'subtitle-video-list-front' video.id %}" class="btn btn-primary">Subtitles</a>
+                                    <a href="#" class="btn btn-secondary">Edit</a>
+                                    <a href="#" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </section>
 

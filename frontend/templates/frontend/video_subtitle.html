@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="subtitle-search-section">
+    <div class="container">
+        <!-- Search Form -->
+        <form method="get" action="{% url 'subtitle-video-search-front' data.results.video_id %}" class="mb-4">
+            <div class="input-group" style="max-width: 400px; margin: 0 auto;">
+                <input type="text" class="form-control" name="keyword" placeholder="Search subtitles by keyword" value="{{ keyword }}" style="flex: 1 1 auto;">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <h2 class="section-title text-center mb-4">{{ data.results.video_title }}</h2>
+
+        <!-- Subtitles List -->
+        {% if data.count == 0 %}
+            {% if data.keyword %}
+                <p class="text-center">No subtitles found for "{{ keyword }}"</p>
+            {% else %}
+                <p class="text-center">No subtitles found for this video.</p>
+            {% endif %}
+        {% else %}
+            <div class="subtitle-count text-center mb-4">
+                <p class="h4">{{ data.count }} subtitle{{ data.count|pluralize }}</p>
+            </div>
+            <div class="results-list">
+                <ul class="list-group">
+                    {% for subtitle in data.results.subtitles %}
+                        <li class="list-group-item">
+                            <strong>Start Time:</strong> {{ subtitle.start_time }}<br>
+                            <strong>Subtitle:</strong> {{ subtitle.text }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+/* Styles for Subtitle Search Section */
+.subtitle-search-section {
+    padding: 60px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.input-group .form-control {
+    height: 2.5rem; /* Adjust height if needed */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker color on hover */
+    border-color: #0056b3;
+}
+
+.subtitle-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.results-list .list-group-item {
+    border: none;
+    padding: 10px;
+}
+</style>
+{% endblock %}

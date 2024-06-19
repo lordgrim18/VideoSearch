@@ -13,7 +13,11 @@ class VideoListAPIView(APIView):
         videos = video_table.scan()['Items']
         serializer = VideoSerializer(data=videos, many=True, context={'request': request})
         if serializer.is_valid():
-            return CustomResponse(message="Videos fetched successfully", data=serializer.data).success_response()
+            data = {
+                'count': len(videos),
+                'results': serializer.data
+            }
+            return CustomResponse(message="Videos fetched successfully", data=data).success_response()
         return CustomResponse(message="Error fetching videos", data=serializer.errors).failure_response()  
 
 class CreateVideoAPIView(APIView):
@@ -56,10 +60,7 @@ class SingleVideoAPIView(APIView):
 class VideoSearchAPIView(APIView):
 
     def get(self, request):
-        keyword = request.query_params.get('keyword')
-        if not keyword:
-            return CustomResponse(message="No keyword provided", data={}).failure_response()
-        print(keyword)
+        keyword = request.query_params.get('keyword', '')
         videos = video_table.scan(
             FilterExpression=boto3.dynamodb.conditions.Attr('title_lower').contains(keyword.lower())
         )['Items']
