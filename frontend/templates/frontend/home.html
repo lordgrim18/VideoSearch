@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="search-section">
+    <div class="container">
+        <h2 class="section-title">Upload Videos and Search Subtitles</h2>
+        <form class="search-form" action="{% url 'search-front' %}" method="get">
+            <input type="text" name="keyword" class="search-input" placeholder="Search videos and subtitles..." required>
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
+</section>
+
+<section class="cards-section">
+    <div class="container">
+        <div class="card-deck">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Videos List">
+                <div class="card-body">
+                    <h5 class="card-title">Videos List</h5>
+                    <p class="card-text">Browse through the list of uploaded videos.</p>
+                    <a href="{% url 'videos_list_front' %}" class="btn btn-primary">Go to Videos List</a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1615309662146-255e7532957e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Video Upload">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Video</h5>
+                    <p class="card-text">Upload your videos to search for subtitles.</p>
+                    <a href="{% url 'upload' %}" class="btn btn-primary">Upload Video</a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1619884889432-b242fdee532a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Search Subtitles">
+                <div class="card-body">
+                    <h5 class="card-title">Search Subtitles</h5>
+                    <p class="card-text">Find subtitles for your favorite videos.</p>
+                    <a href="{% url 'subtitle-front-search' %}" class="btn btn-primary">Search Subtitles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
