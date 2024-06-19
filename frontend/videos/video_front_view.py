@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import redirect
 
 from api.utils import CustomResponse
-from api.video.video_view import VideoListAPIView, CreateVideoAPIView
+from api.video.video_view import VideoListAPIView, CreateVideoAPIView, VideoSearchAPIView
 from api.video.video_serializer import VideoSerializer
 
 class VideoListView(VideoListAPIView):
@@ -23,3 +23,7 @@ class VideoUploadView(CreateVideoAPIView):
         if response.status_code == 200:
             return redirect('videos_list_front')
         return response
+    
+class VideoSearchView(VideoSearchAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'frontend/video_list.html'
