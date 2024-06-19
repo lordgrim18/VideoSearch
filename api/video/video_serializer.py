@@ -13,6 +13,9 @@ class VideoSerializer(serializers.Serializer):
     video_file_name = serializers.CharField(required=False)
 
     def validate_title(self, value):
+        request = self.context.get('request')
+        if request.method == 'GET':
+            return value
         if video_table.scan(FilterExpression=boto3.dynamodb.conditions.Attr('title').eq(value))['Items']:
             raise serializers.ValidationError('Video with this title already exists')
         return value
@@ -46,8 +49,8 @@ class VideoSerializer(serializers.Serializer):
         video_id = instance['id']
         video_table.update_item(
             Key={'id': video_id},
-            UpdateExpression='SET title = :title',
-            ExpressionAttributeValues={':title': validated_data['title']}
+            UpdateExpression='SET title = :title, title_lower = :title_lower',
+            ExpressionAttributeValues={':title': validated_data['title'], ':title_lower': validated_data['title'].lower()}
         )
         video = video_table.get_item(Key={'id': video_id})['Item']
         return video

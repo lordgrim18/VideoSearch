@@ -12,7 +12,7 @@ from .video_serializer import VideoSerializer
 class VideoListAPIView(APIView):
     def get(self, request):
         videos = video_table.scan()['Items']
-        serializer = VideoSerializer(data=videos, many=True)
+        serializer = VideoSerializer(data=videos, many=True, context={'request': request})
         if serializer.is_valid():
             return CustomResponse(message="Videos fetched successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error fetching videos", data=serializer.errors).failure_response()  
@@ -23,7 +23,7 @@ class VideoAPIView(APIView):
         video = video_table.get_item(Key={'id': video_id})
         if video.get('Item') is None:
             return CustomResponse(message="Video not found", data={}).failure_response()
-        serializer = VideoSerializer(data=video['Item'])
+        serializer = VideoSerializer(data=video['Item'], context={'request': request})
         if serializer.is_valid():
             return CustomResponse(message="Video fetched successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error fetching video", data=serializer.errors).failure_response()
@@ -58,12 +58,16 @@ class VideoSearchAPIView(APIView):
         keyword = request.query_params.get('keyword')
         if not keyword:
             return CustomResponse(message="No keyword provided", data={}).failure_response()
-        
+        print(keyword)
         videos = video_table.scan(
             FilterExpression=boto3.dynamodb.conditions.Attr('title_lower').contains(keyword.lower())
         )['Items']
         
-        serializer = VideoSerializer(data=videos, many=True)
+        serializer = VideoSerializer(data=videos, many=True, context={'request': request})
         if serializer.is_valid():
-            return CustomResponse(message="Videos fetched successfully", data=serializer.data).success_response()
+            data = {
+                'count': len(videos),
+                'results': serializer.data
+            }
+            return CustomResponse(message="Videos fetched successfully", data=data).success_response()
         return CustomResponse(message="Error fetching videos", data=serializer.errors).failure_response()
