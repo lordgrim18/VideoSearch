@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="subtitle-search-section">
+    <div class="container">
+        <h2 class="section-title">Search Subtitles</h2>
+        <form method="get" action="">
+            <div class="form-group">
+                <label for="id_keyword">Search Query:</label>
+                <input type="text" class="form-control" id="id_keyword" name="keyword" placeholder="Enter your search query" value="{{ keyword }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        {% if data %}
+            <h3 class="mt-5">Search Results</h3>
+            <p>{{ data.count }} result{{ data.count|pluralize }}</p>
+            {% if data.count == 0 %}
+                <p>No results found for "{{ data.keyword }}"</p>
+            {% else %}
+                <div class="results-list">
+                    <div class="row">
+                        {% for result in data.results %}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ result.video_title }}</h5>
+                                    <ul class="list-group list-group-flush">
+                                        {% for subtitle in result.subtitles %}
+                                            <li class="list-group-item">
+                                                <strong>Start Time:</strong> {{ subtitle.start_time }}<br>
+                                                <strong>Subtitle:</strong> {{ subtitle.text }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+/* Styles for Subtitle Search Section */
+.subtitle-search-section {
+    padding: 60px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker color on hover */
+    border-color: #0056b3;
+}
+
+.results-list .card {
+    margin-top: 20px;
+}
+
+.results-list .list-group-item {
+    border: none;
+    padding: 10px;
+}
+</style>
+{% endblock %}
