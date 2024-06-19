@@ -16,17 +16,8 @@ class VideoListAPIView(APIView):
             return CustomResponse(message="Videos fetched successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error fetching videos", data=serializer.errors).failure_response()  
 
-class VideoAPIView(APIView):
+class CreateVideoAPIView(APIView):
 
-    def get(self, request, video_id):
-        video = video_table.get_item(Key={'id': video_id})
-        if video.get('Item') is None:
-            return CustomResponse(message="Video not found", data={}).failure_response()
-        serializer = VideoSerializer(data=video['Item'], context={'request': request})
-        if serializer.is_valid():
-            return CustomResponse(message="Video fetched successfully", data=serializer.data).success_response()
-        return CustomResponse(message="Error fetching video", data=serializer.errors).failure_response()
-        
     def post(self, request):
         serializer = VideoSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -34,23 +25,34 @@ class VideoAPIView(APIView):
             return CustomResponse(message="Video created successfully", data=serializer.data).success_response()
         return CustomResponse(message="Error creating video", data=serializer.errors).failure_response()
     
-    def patch(self, request, video_id):
-        video = video_table.get_item(Key={'id': video_id})
-        if video.get('Item') is None:
-            return CustomResponse(message="Video not found", data={}).failure_response()
-        serializer = VideoSerializer(video['Item'], data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return CustomResponse(message="Video updated successfully", data=serializer.data).success_response()
-        return CustomResponse(message="Error updating video", data=serializer.errors).failure_response()
-    
-    def delete(self, request, video_id):
-        video = video_table.get_item(Key={'id': video_id})
-        if video.get('Item') is None:
-            return CustomResponse(message="Video not found", data={}).failure_response()
-        delete_video_subtitles.delay(video_id)
-        return CustomResponse(message="Video deleted successfully", data={}).success_response()
-    
+class SingleVideoAPIView(APIView):
+
+        def get(self, request, video_id):
+            video = video_table.get_item(Key={'id': video_id})
+            if video.get('Item') is None:
+                return CustomResponse(message="Video not found", data={}).failure_response()
+            serializer = VideoSerializer(data=video['Item'], context={'request': request})
+            if serializer.is_valid():
+                return CustomResponse(message="Video fetched successfully", data=serializer.data).success_response()
+            return CustomResponse(message="Error fetching video", data=serializer.errors).failure_response()
+        
+        def patch(self, request, video_id):
+            video = video_table.get_item(Key={'id': video_id})
+            if video.get('Item') is None:
+                return CustomResponse(message="Video not found", data={}).failure_response()
+            serializer = VideoSerializer(video['Item'], data=request.data, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return CustomResponse(message="Video updated successfully", data=serializer.data).success_response()
+            return CustomResponse(message="Error updating video", data=serializer.errors).failure_response()
+        
+        def delete(self, request, video_id):
+            video = video_table.get_item(Key={'id': video_id})
+            if video.get('Item') is None:
+                return CustomResponse(message="Video not found", data={}).failure_response()
+            delete_video_subtitles.delay(video_id)
+            return CustomResponse(message="Video deleted successfully", data={}).success_response()
+
 class VideoSearchAPIView(APIView):
 
     def get(self, request):
