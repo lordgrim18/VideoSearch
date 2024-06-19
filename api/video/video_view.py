@@ -23,6 +23,13 @@ class VideoListAPIView(APIView):
 class CreateVideoAPIView(APIView):
 
     def post(self, request):
+        try:
+            video_file = request.FILES['video_file']
+        except:
+            return CustomResponse(message="Video file not found", data={}).failure_response()
+        if not video_file.name.endswith('.mp4'):
+            return CustomResponse(message="Video file must be in mp4 format", data={}).failure_response()
+        
         serializer = VideoSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
