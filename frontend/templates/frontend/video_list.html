@@ -29,8 +29,8 @@
                                 <h5 class="card-title">{{ video.title }}</h5>
                                 <div class="btn-group" role="group">
                                     <a href="{% url 'subtitle-video-list-front' video.id %}" class="btn btn-primary">Subtitles</a>
-                                    <a href="#" class="btn btn-secondary">Edit</a>
-                                    <a href="#" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'update-video-front' video.id %}" class="btn btn-secondary">Edit</a>
+                                    <a href="{% url 'delete-video-front' video.id %}?extra_param=delete_option" class="btn btn-danger">Delete</a>
                                 </div>
                             </div>
                         </div>
@@ -40,5 +40,4 @@
         {% endif %}
     </div>
 </section>
-
 {% endblock %}
