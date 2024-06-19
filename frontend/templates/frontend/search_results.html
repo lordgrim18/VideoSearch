@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="search-results-section">
+    <div class="container">
+        <h2 class="section-title">Search Results</h2>
+        <form method="get" action="">
+            <div class="form-group">
+                <label for="id_keyword">Search Query:</label>
+                <input type="text" class="form-control" id="id_keyword" name="keyword" placeholder="Enter your search query" value="{{ keyword }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        {% if data %}
+            <h3 class="mt-5">Search Results</h3>
+
+            {% if data.video_count is not none %}
+                <p>{{ data.video_count }} video result{{ data.video_count|pluralize }}</p>
+            {% endif %}
+
+            {% if data.subtitle_count is not none %}
+                <p>{{ data.subtitle_count }} subtitle result{{ data.subtitle_count|pluralize }}</p>
+            {% endif %}
+
+
+            {% if video_count == 0 %}
+                <p>No videos found for "{{ data.keyword }}"</p>
+            {% else %}
+                <div class="results-list">
+                    <div class="row">
+                        {% for video in data.video_results %}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ video.title }}</h5>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if data.subtitle_count == 0 %}
+                <p>No subtitles found for "{{ data.keyword }}"</p>
+            {% else %}
+                <div class="results-list">
+                    <div class="row">
+                        {% for result in data.subtitle_results %}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ result.video_title }}</h5>
+                                    <ul class="list-group list-group-flush">
+                                        {% for subtitle in result.subtitles %}
+                                            <li class="list-group-item">
+                                                <strong>Start Time:</strong> {{ subtitle.start_time }}<br>
+                                                <strong>Subtitle:</strong> {{ subtitle.text }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+/* Styles for Search Results Section */
+.search-results-section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.section-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker color on hover */
+    border-color: #0056b3;
+}
+
+.results-list .card {
+    margin-top: 20px;
+}
+
+.results-list .list-group-item {
+    border: none;
+    padding: 10px;
+}
+</style>
+{% endblock %}

@@ -7,6 +7,12 @@ from api.subtitle.subtitle_serializer import VideoSubtitleSerializer
 from api.video.video_serializer import VideoSerializer
 
 class SearchAPIView(APIView):
+    """
+    Searches for videos and subtitles based on a keyword
+    Videos having the keyword in their title are returned
+    Videos having subtitles with the keyword are returned
+    
+    """
 
     def get(self, request):
         keyword = request.query_params.get('keyword')
