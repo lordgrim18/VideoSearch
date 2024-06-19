@@ -78,20 +78,12 @@ class SubtitleSearchAPIView(APIView):
 class SubtitleVideoSearchAPIView(APIView):
 
         def get(self, request, video_id):
-            keyword = request.query_params.get('keyword')
-            if not keyword:
-                return CustomResponse(message="No keyword provided", data={}).failure_response()
+            keyword = request.query_params.get('keyword', '')  
             
             video_title = video_table.get_item(Key={'id': video_id})['Item']['title']
-
-            # subtitle_results = subtitle_table.query(
-            #     KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video_id) & boto3.dynamodb.conditions.Key('text_lower').contains(keyword.lower())
-            # )
-
             subtitle_results = subtitle_table.scan(
                 FilterExpression=boto3.dynamodb.conditions.Attr('video_id').eq(video_id) & boto3.dynamodb.conditions.Attr('text_lower').contains(keyword.lower())
             )['Items']
-
             count = len(subtitle_results)
 
             subtitles = [{

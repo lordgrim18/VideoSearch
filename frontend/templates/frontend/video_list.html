@@ -28,7 +28,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ video.title }}</h5>
                                 <div class="btn-group" role="group">
-                                    <a href="#" class="btn btn-primary">Subtitles</a>
+                                    <a href="{% url 'subtitle-video-list-front' video.id %}" class="btn btn-primary">Subtitles</a>
                                     <a href="#" class="btn btn-secondary">Edit</a>
                                     <a href="#" class="btn btn-danger">Delete</a>
                                 </div>
