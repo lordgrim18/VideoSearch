@@ -113,4 +113,3 @@ class SubtitleVideoSearchAPIView(APIView):
                 }
                 return CustomResponse(message="Subtitles fetched successfully", data=data).success_response()
             return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_response()
-            
