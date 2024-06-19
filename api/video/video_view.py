@@ -1,5 +1,4 @@
 import boto3
-from decouple import config
 from rest_framework.views import APIView
 
 from api.utils import CustomResponse
