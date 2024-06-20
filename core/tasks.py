@@ -12,7 +12,7 @@ from .dynamo_setup import subtitle_table, video_table
 def extract_subtitles(video_id, local_file_url, video_file_name):
     output_path = f"{local_file_url}.srt"
 
-    subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', local_file_url, '-o', output_path])
+    subprocess.run(['ccextractor', local_file_url, '-o', output_path])
 
     with open(output_path, 'r') as f:
         content = f.read()
@@ -30,10 +30,10 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
                 }
             )   
 
-    # s3 = boto3.client('s3')
-    # bucket_name = config('BUCKET_NAME')
-    # print(f"Uploading {local_file_url} to S3")
-    # s3.upload_file(local_file_url, bucket_name, video_file_name)
+    s3 = boto3.client('s3')
+    bucket_name = config('BUCKET_NAME')
+    print(f"Uploading {local_file_url} to S3")
+    s3.upload_file(local_file_url, bucket_name, video_file_name)
 
     os.remove(local_file_url)
     os.remove(output_path)
