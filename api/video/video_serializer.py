@@ -6,7 +6,6 @@ from core.dynamo_setup import video_table
 from core.utils import save_file_locally
 from core.tasks import extract_subtitles
 
-
 class VideoSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
     title = serializers.CharField()
@@ -22,7 +21,7 @@ class VideoSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        title = request.data['title']
+        title = validated_data['title']
         video_file = request.FILES['video_file']
         video_id = str(uuid.uuid4())
         video_file_name = f"{video_id}_{video_file.name}"
