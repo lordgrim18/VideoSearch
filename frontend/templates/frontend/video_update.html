@@ -17,6 +17,15 @@
                 <form id="editVideoForm" method="post">
                     <input type="hidden" name="_method" value="PATCH">
                     {% csrf_token %}
+                    {% if error %}
+                        {% for field, errors in data.items %}
+                            {% for error in errors %}
+                                <div>
+                                    <small class="text-danger">{{ error }}</small>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                     <div class="form-group">
                         <label for="editTitle">Title</label>
                         <input type="text" class="form-control" id="editTitle" name="title" required>
