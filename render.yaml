@@ -18,7 +18,7 @@ services:
     region: ohio
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn VideoSearch.wsgi:application --bind 0.0.0.0:8000"
+    startCommand: "python -m gunicorn VideoSearch.asgi:application -k uvicorn.workers.UvicornWorker"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
