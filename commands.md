@@ -30,6 +30,8 @@ sudo service redis-server status
 
 redis-cli ping
 
+redis://:password@hostname:port/db_number
+
 # run redis on docker - for windows
 
 docker exec -it redis-stack-server redis-cli
