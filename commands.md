@@ -38,6 +38,18 @@ docker exec -it redis-stack-server redis-cli
 
 docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 
+# docker commands
+
+docker build . -t videosearch
+
+docker run -p 8000:8000 videosearch gunicorn -b 0.0.0.0:8000 VideoSearch.wsgi:application
+
+# render
+
+python -m gunicorn VideoSearch.asgi:application -k uvicorn.workers.UvicornWorker
+
+
+
 # django commands
 
 python manage.py runserver   
