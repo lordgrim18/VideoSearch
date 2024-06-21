@@ -12,7 +12,7 @@ from .dynamo_setup import subtitle_table, video_table
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):
     output_path = f"{local_file_url}.srt"
-    subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', local_file_url, '-o', output_path])
+    subprocess.run(['ccextractor', local_file_url, '-o', output_path])
     with open(output_path, 'r') as f:
         content = f.read()
 

@@ -36,7 +36,7 @@ class VideoSerializer(serializers.Serializer):
             }
         )
         extract_subtitles.delay(video_id, local_file_url, video_file_name)
-        # save_to_s3.delay(local_file_url, video_file_name, local_file_url)
+        save_to_s3.delay(local_file_url, video_file_name, local_file_url)
 
         video = video_table.get_item(Key={'id': video_id})['Item']
         return video
