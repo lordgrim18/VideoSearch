@@ -14,9 +14,7 @@ from api.storage.storage_serializer import StorageSerializer
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):
     output_path = f"{local_file_url}.srt"
-
     subprocess.run(['C:\Program Files (x86)\CCExtractor\ccextractorwin.exe', local_file_url, '-o', output_path])
-
     with open(output_path, 'r') as f:
         content = f.read()
 
@@ -33,16 +31,6 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
                 }
             )   
 
-    # create_thumbnail(local_file_url, video_file_name)
-
-    # s3 = boto3.client('s3')
-    # bucket_name = config('BUCKET_NAME')
-    # print(f"Uploading {local_file_url} to S3")
-    # s3.upload_file(local_file_url, bucket_name, video_file_name)
-
-    # os.remove(local_file_url)
-    # os.remove(output_path)
-
 @shared_task
 def create_thumbnail(file_path, video_file_name):
     """Extract the first frame from video"""
@@ -58,11 +46,14 @@ def create_thumbnail(file_path, video_file_name):
         cv2.imwrite(image_path, image)
 
 @shared_task
-def save_to_s3(file_path, file_name):
+def save_to_s3(file_path, file_name, local_file_url):
     s3 = boto3.client('s3')
     bucket_name = config('BUCKET_NAME')
     print(f"Uploading {file_path} to S3")
     s3.upload_file(file_path, bucket_name, file_name)
+
+    os.remove(local_file_url)
+    os.remove(f"{local_file_url}.srt")
 
 @shared_task
 def delete_video_subtitles(video_id):
