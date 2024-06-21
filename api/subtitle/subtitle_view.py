@@ -12,7 +12,7 @@ class SubtitleListAPIView(APIView):
             return CustomResponse(message="No subtitles found", data={}).failure_response()
         
         count = len(subtitles['Items'])
-        video_title = video_table.get_item(Key={'id': video_id})['Item']['title']
+        video = video_table.get_item(Key={'id': video_id})['Item']
         
         subtitles = [{
             'start_time': str(subtitle['start_time']),
@@ -20,15 +20,17 @@ class SubtitleListAPIView(APIView):
         } for subtitle in subtitles['Items']]
         data = {
             'video_id': video_id,
-            'video_title': video_title,
+            'video_title': video['title'],
             'subtitles': subtitles
         }
 
         serializer = VideoSubtitleSerializer(data=data)
         if serializer.is_valid():
+            serialized_data = serializer.data
+            serialized_data['video_file_name'] = video['video_file_name']
             data = {
                 'count': count,
-                'results': serializer.data
+                'results': serialized_data
             }
             return CustomResponse(message="Subtitles fetched successfully", data=data).success_response()
         return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_response()
