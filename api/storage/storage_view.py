@@ -38,7 +38,7 @@ class StorageAPIView(APIView):
     #     return CustomResponse(message="Error deleting object", data=serializer.errors).failure_response()
     
 class StorageURLAPIView(APIView):
-    def get(self, request):
+    def post(self, request):
         serializer = StorageURLSerializer(data=request.data)
         if serializer.is_valid():
             return CustomResponse(message="Object URL generated successfully", data=serializer.data).success_response()
