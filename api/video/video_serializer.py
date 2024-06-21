@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from core.dynamo_setup import video_table
 from core.utils import save_file_locally
-from core.tasks import extract_subtitles
+from core.tasks import extract_subtitles, create_thumbnail, save_to_s3
 
 class VideoSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
@@ -39,7 +39,9 @@ class VideoSerializer(serializers.Serializer):
             print('Error:', e)
             raise serializers.ValidationError('Error creating video: {}'.format(e))
         finally:
+            create_thumbnail.delay(local_file_url, video_file_name)
             extract_subtitles.delay(video_id, local_file_url, video_file_name)
+            save_to_s3.delay(local_file_url, video_file_name)
 
         video = video_table.get_item(Key={'id': video_id})['Item']
         return video
