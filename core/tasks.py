@@ -9,6 +9,7 @@ from django.conf import settings
 
 from .utils import parse_srt
 from .dynamo_setup import subtitle_table, video_table
+from api.storage.storage_serializer import StorageSerializer
 
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):
@@ -76,3 +77,9 @@ def delete_video_subtitles(video_id):
                     'start_time': subtitle['start_time']
                 }
             )
+
+@shared_task
+def delete_video_from_s3(video_name):
+    s3 = boto3.client('s3')
+    bucket_name = config('BUCKET_NAME')
+    s3.delete_object(Bucket=bucket_name, Key=video_name)    

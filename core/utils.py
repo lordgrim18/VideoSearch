@@ -1,7 +1,6 @@
 import re
 import os
 import os
-import cv2
 from django.conf import settings
 
 def time_to_seconds(time_str):
