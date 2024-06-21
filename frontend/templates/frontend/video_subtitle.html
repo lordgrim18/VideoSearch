@@ -12,7 +12,11 @@
                 preload="auto"
                 width="640"
                 height="264"
+                {% if data.results.thumbnail_url %}
                 poster="{% static data.results.thumbnail_url %}"
+                {% else %}
+                poster="https://images.unsplash.com/photo-1611162616475-46b635cb6868?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                {% endif %}
                 data-setup="{}"
             >
                 {% if data.results.video_url %}

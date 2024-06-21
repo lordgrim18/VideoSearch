@@ -1,6 +1,6 @@
 import re
 import os
-import os
+import cv2
 from django.conf import settings
 
 def time_to_seconds(time_str):
@@ -34,4 +34,15 @@ def save_file_locally(file, video_file_name):
 
     return file_path
 
-
+def create_thumbnail(file_path, video_file_name):
+    """Extract the first frame from video"""
+    cap = cv2.VideoCapture(file_path)
+    for i in range(28):
+        cap.read()
+    success, image = cap.read()
+    if success:
+        local_dir = os.path.join(settings.MEDIA_ROOT, 'images')
+        if not os.path.exists(local_dir):
+            os.makedirs(local_dir)
+        image_path = os.path.join(local_dir, f"{video_file_name}.png")
+        cv2.imwrite(image_path, image)
