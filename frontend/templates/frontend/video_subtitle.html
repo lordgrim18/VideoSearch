@@ -4,7 +4,7 @@
 {% load static %}
 <section class="subtitle-search-section">
     <div class="container">
-        <div>
+        <div class="row justify-content-center">
             <video
                 id="{{ data.results.video_id }}"
                 class="video-js"
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Search Form -->
-        <form method="get" action="{% url 'subtitle-video-search-front' data.results.video_id %}" class="mb-4">
+        <form method="get" action="{% url 'subtitle-video-search-front' data.results.video_id %}" class="mb-4 mt-4">
             <div class="input-group" style="max-width: 400px; margin: 0 auto;">
                 <input type="text" class="form-control" name="keyword" placeholder="Search subtitles by keyword" value="{{ keyword }}" style="flex: 1 1 auto;">
                 <div class="input-group-append">
