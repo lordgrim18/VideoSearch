@@ -1,5 +1,4 @@
 import os
-import cv2
 import boto3
 import subprocess
 from decimal import Decimal
@@ -9,7 +8,6 @@ from django.conf import settings
 
 from .utils import parse_srt
 from .dynamo_setup import subtitle_table, video_table
-from api.storage.storage_serializer import StorageSerializer
 
 @shared_task
 def extract_subtitles(video_id, local_file_url, video_file_name):
@@ -30,20 +28,6 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
                     'text_lower': subtitle['text'].lower()
                 }
             )   
-
-@shared_task
-def create_thumbnail(file_path, video_file_name):
-    """Extract the first frame from video"""
-    cap = cv2.VideoCapture(file_path)
-    for i in range(28):
-        cap.read()
-    success, image = cap.read()
-    if success:
-        local_dir = os.path.join(settings.MEDIA_ROOT, 'images')
-        if not os.path.exists(local_dir):
-            os.makedirs(local_dir)
-        image_path = os.path.join(local_dir, f"{video_file_name}.png")
-        cv2.imwrite(image_path, image)
 
 @shared_task
 def save_to_s3(file_path, file_name, local_file_url):
