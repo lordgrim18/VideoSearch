@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 
 from api.utils import CustomResponse
 from core.dynamo_setup import video_table, subtitle_table
-from core.tasks import delete_video_subtitles, delete_video_from_s3
+from core.tasks import delete_video_subtitles, delete_video_from_s3, delete_video_thumbnail
 
 from .video_serializer import VideoSerializer
 
@@ -63,7 +63,8 @@ class SingleVideoAPIView(APIView):
                 return CustomResponse(message="Video not found", data={}).failure_response()
             video_name = video['Item']['video_file_name']
             delete_video_subtitles.delay(video_id)
-            delete_video_from_s3.delay(video_name)
+            # delete_video_from_s3.delay(video_name)
+            delete_video_thumbnail.delay(video_name)
             return CustomResponse(message="Video deleted successfully", data={}).success_response()
 
 class VideoSearchAPIView(APIView):
