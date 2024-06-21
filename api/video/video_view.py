@@ -1,4 +1,3 @@
-import uuid
 import boto3
 from rest_framework.views import APIView
 

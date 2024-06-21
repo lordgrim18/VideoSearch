@@ -59,17 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "VideoSearch.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": config("DATABASE_ENGINE"),
-        "NAME": config("DATABASE_NAME"),
-        "USER": config("DATABASE_USER"),
-        "PASSWORD": config("DATABASE_PASSWORD"),
-        "HOST": config("DATABASE_HOST"),
-        "PORT": config("DATABASE_PORT"),
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
