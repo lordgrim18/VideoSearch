@@ -1,8 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 <section class="subtitle-search-section">
     <div class="container">
+        <div>
+            <video
+                id="{{ data.results.video_id }}"
+                class="video-js"
+                controls
+                preload="auto"
+                width="640"
+                height="264"
+                poster="{% static data.results.thumbnail_url %}"
+                data-setup="{}"
+            >
+                {% if data.results.video_url %}
+                    <source src="{{ data.results.video_url }}" type="video/mp4" />
+                {% else %}
+                    <source src="" type="video/mp4" />
+                {% endif %}
+            </video>
+        </div>
+
         <!-- Search Form -->
         <form method="get" action="{% url 'subtitle-video-search-front' data.results.video_id %}" class="mb-4">
             <div class="input-group" style="max-width: 400px; margin: 0 auto;">

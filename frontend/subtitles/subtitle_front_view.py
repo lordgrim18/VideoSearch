@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from django.http import HttpRequest, QueryDict
 
 from api.subtitle.subtitle_view import SubtitleSearchAPIView, SubtitleListAPIView, SubtitleVideoSearchAPIView
-from api.storage.storage_view import StorageURLAPIView
+from api.storage.storage_serializer import StorageURLSerializer
 
 
 class SubtitleSearchView(SubtitleSearchAPIView):
@@ -23,6 +23,10 @@ class SubtitleListView(SubtitleListAPIView):
         thumbnail_url = os.path.join(settings.MEDIA_ROOT, 'images', f"{video_file_name}.png")
         if os.path.exists(thumbnail_url):
             data['results']['thumbnail_url'] = f"images\{video_file_name}.png"
+
+        storage_response = StorageURLSerializer(data={'object_name': video_file_name})
+        if storage_response.is_valid():
+            data['results']['video_url'] = storage_response.data['presigned_url']
         return response
 
 class SubtitleVideoSearchView(SubtitleVideoSearchAPIView):
