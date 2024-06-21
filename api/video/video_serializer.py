@@ -37,7 +37,7 @@ class VideoSerializer(serializers.Serializer):
             )
         except Exception as e:
             print('Error:', e)
-            raise serializers.ValidationError('Error creating video')
+            raise serializers.ValidationError('Error creating video: {}'.format(e))
         finally:
             extract_subtitles.delay(video_id, local_file_url, video_file_name)
 

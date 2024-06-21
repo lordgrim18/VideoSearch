@@ -5,7 +5,7 @@ from decimal import Decimal
 from decouple import config
 from celery import shared_task
 
-from .utils import parse_srt
+from .utils import parse_srt, create_thumbnail
 from .dynamo_setup import subtitle_table, video_table
 
 @shared_task
@@ -29,6 +29,8 @@ def extract_subtitles(video_id, local_file_url, video_file_name):
                     'text_lower': subtitle['text'].lower()
                 }
             )   
+
+    create_thumbnail(local_file_url, video_file_name)
 
     s3 = boto3.client('s3')
     bucket_name = config('BUCKET_NAME')
