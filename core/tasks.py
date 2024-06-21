@@ -42,7 +42,7 @@ def save_to_s3(file_path, file_name, local_file_url):
 @shared_task
 def delete_video_subtitles(video_id):
     # Also delete associated subtitles
-    video_table.delete_item(Key={'id': video_id})
+    # video_table.delete_item(Key={'id': video_id})
     subtitles = subtitle_table.query(KeyConditionExpression=boto3.dynamodb.conditions.Key('video_id').eq(video_id))
     with subtitle_table.batch_writer() as batch:
         for subtitle in subtitles['Items']:
