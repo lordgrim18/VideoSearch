@@ -1,6 +1,8 @@
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from django.shortcuts import redirect
+from django.conf import settings
+import os
 
 from api.utils import CustomResponse
 from api.video.video_view import VideoListAPIView, CreateVideoAPIView, VideoSearchAPIView, SingleVideoAPIView
@@ -9,6 +11,16 @@ from api.video.video_serializer import VideoSerializer
 class VideoListView(VideoListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'frontend/video_list.html'
+
+    def get(self, request):
+        response = super().get(request)
+        data = response.data.get('data')
+        for video in data['results']:
+            file_name = video['video_file_name']
+            thumbnail_url = os.path.join(settings.MEDIA_ROOT, 'images', f"{file_name}.png")
+            if os.path.exists(thumbnail_url):
+                video['thumbnail_url'] = f"images\{file_name}.png"           
+        return response
 
 class VideoUploadView(CreateVideoAPIView):
     renderer_classes = [TemplateHTMLRenderer]
