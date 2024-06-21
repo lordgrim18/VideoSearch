@@ -2,6 +2,7 @@
 celery -A VideoSearch worker -l INFO
 celery -A VideoSearch worker -l info --pool=solo -E 
 celery -A VideoSearch worker --loglevel=info
+celery -A VideoSearch worker -l info --pool=solo -E --concurrency=4
 
 # check the status of celery worker
 celery inspect active_queues
