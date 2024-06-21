@@ -64,7 +64,7 @@ class SingleVideoAPIView(APIView):
             video_name = video['Item']['video_file_name']
             video_table.delete_item(Key={'id': video_id})
             delete_video_subtitles.delay(video_id)
-            # delete_video_from_s3.delay(video_name)
+            delete_video_from_s3.delay(video_name)
             delete_video_thumbnail.delay(video_name)
             return CustomResponse(message="Video deleted successfully", data={}).success_response()
 
