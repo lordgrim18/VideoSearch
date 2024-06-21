@@ -33,10 +33,10 @@ class StorageSerializer(serializers.Serializer):
         s3.download_file(bucket_name, object_name, download_path)
         return CustomResponse(message="File downloaded successfully", data={'download_path': download_path}).success_response()
     
-    def destroy(self, object_name):
-        s3 = boto3.client('s3')
-        bucket_name = config('BUCKET_NAME')
-        s3.delete_object(Bucket=bucket_name, Key=object_name)
+    # def destroy(self, object_name):
+    #     s3 = boto3.client('s3')
+    #     bucket_name = config('BUCKET_NAME')
+    #     s3.delete_object(Bucket=bucket_name, Key=object_name)
 
 class StorageURLSerializer(StorageSerializer):
     expires_in = serializers.IntegerField(required=False)
