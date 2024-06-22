@@ -13,6 +13,7 @@ Note: The `main` branch of this repository mainly contains the code for the depl
 ## Features
 
 - **Video Upload**: Users can upload videos through the web interface.
+- **Thumbnail Generation**: Generates thumbnails for uploaded videos.
 - **Subtitle Extraction**: Extracts subtitles from uploaded videos using `ccextractor`.
 - **Background Processing**: Uses Celery to handle video processing in the background.
 - **AWS Integration**: Stores videos in AWS S3 and subtitles in AWS DynamoDB.
