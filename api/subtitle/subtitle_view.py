@@ -82,7 +82,7 @@ class SubtitleVideoSearchAPIView(APIView):
         def get(self, request, video_id):
             keyword = request.query_params.get('keyword', '')  
             
-            video_title = video_table.get_item(Key={'id': video_id})['Item']['title']
+            video = video_table.get_item(Key={'id': video_id})['Item']
             subtitle_results = subtitle_table.scan(
                 FilterExpression=boto3.dynamodb.conditions.Attr('video_id').eq(video_id) & boto3.dynamodb.conditions.Attr('text_lower').contains(keyword.lower())
             )['Items']
@@ -94,16 +94,18 @@ class SubtitleVideoSearchAPIView(APIView):
             } for subtitle in subtitle_results]
             data = {
                 'video_id': video_id,
-                'video_title': video_title,
+                'video_title': video['title'],
                 'subtitles': subtitles
             }
 
             serializer = VideoSubtitleSerializer(data=data)
             if serializer.is_valid():
+                serialized_data = serializer.data
+                serialized_data['video_file_name'] = video['video_file_name']
                 data = {
                     'keyword': keyword,
                     'count': count,
-                    'results': serializer.data
+                    'results': serialized_data
                 }
                 return CustomResponse(message="Subtitles fetched successfully", data=data).success_response()
             return CustomResponse(message="Error fetching subtitles", data=serializer.errors).failure_response()

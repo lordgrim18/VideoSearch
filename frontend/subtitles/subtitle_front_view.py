@@ -32,3 +32,16 @@ class SubtitleListView(SubtitleListAPIView):
 class SubtitleVideoSearchView(SubtitleVideoSearchAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'frontend/video_subtitle.html'
+
+    def get(self, request, video_id):
+        response = super().get(request, video_id)
+        data = response.data.get('data')
+        video_file_name = data['results']['video_file_name']
+        thumbnail_url = os.path.join(settings.MEDIA_ROOT, 'images', f"{video_file_name}.png")
+        if os.path.exists(thumbnail_url):
+            data['results']['thumbnail_url'] = f"images\{video_file_name}.png"
+
+        storage_response = StorageURLSerializer(data={'object_name': video_file_name})
+        if storage_response.is_valid():
+            data['results']['video_url'] = storage_response.data['presigned_url']
+        return response
