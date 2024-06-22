@@ -17,8 +17,8 @@ Note: The `main` branch of this repository mainly contains the code for the depl
 - **Background Processing**: Uses Celery to handle video processing in the background.
 - **AWS Integration**: Stores videos in AWS S3 and subtitles in AWS DynamoDB.
 - **Video Streaming**: Provides pre-signed URLs for streaming videos from S3.
-- **Web Interface**: Provides a user-friendly web interface for interacting with the application.
 - **API Endpoints**: Provides API endpoints for interacting with the application programmatically.
+- **Web Interface**: Provides a user-friendly web interface for interacting with the application, made by rendering rest api endpoints using django rest framework TemplateHTMLRenderer.
 - **Search Functionality**: Allows users to search for keywords in subtitles and videos.
 - **Keyword Search**: Allows users to search for keywords in subtitles and retrieves the relevant time segments in the video.
 
@@ -37,7 +37,7 @@ Note: The `main` branch of this repository mainly contains the code for the depl
 
 ```sh
 git clone https://github.com/lordgrim18/VideoSearch.git
-cd videoprocessingapp
+cd VideoSearch
 ```
 
 ### Install Dependencies
@@ -46,7 +46,24 @@ Create a virtual environment and install the required dependencies:
 
 ```sh
 python -m venv venv
+```
+Now activate the virtual environment:
+
+On Windows:
+
+```sh
+venv\Scripts\activate
+```
+
+On Linux:
+
+```sh
 source venv/bin/activate
+```
+
+Install the dependencies:
+
+```sh
 pip install -r requirements.txt
 ```
 
@@ -79,7 +96,7 @@ Enter your AWS Access Key ID and Secret Access Key when prompted. Then set the d
 - Run the script with the following command:
 
 ```sh
-python core/dynamo_migrator.py
+python3 core/dynamo_migrator.py
 ```
 
 - This will create two tables in DynamoDB: `Video` and `Subtitle`.
@@ -89,6 +106,7 @@ python core/dynamo_migrator.py
 
 - Install Redis:
 
+#### On linux:
 ```sh
 sudo apt update
 sudo apt install redis-server
@@ -113,15 +131,33 @@ redis-cli ping
 ```
 The server should respond with `PONG`. 
 
+#### On Windows:
+
+- Set up Docker image for Redis:
+
+```sh
+docker pull redis
+docker run --name redis -p 6379:6379 -d redis
+```
+
 If you are running Redis on a different host or port, you can specify the connection string in the `.env` file.
 
 ### Start Celery Worker
 
 Start the Celery worker to handle background tasks:
 
+#### On linux:
+
 ```sh
 celery -A VideoSearch worker -loglevel=info
 ```
+
+#### On Windows:
+
+```sh
+celery -A VideoSearch worker -l info --pool=solo -E
+```
+
 
 ### Run the Application
 
